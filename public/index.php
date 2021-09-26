@@ -10,10 +10,6 @@
 </head>
 <body>
     <?php
-        function sort_by_orden ($a, $b) {
-            return $a["size"] - $b["size"];
-        }
-
         echo "<h1 class='pageTitle'>Query languages</h1>";
         include("../src/components/Searcher.html");
 
@@ -22,8 +18,8 @@
         echo "<div class='results'>";
 
             if(isset( $_GET["inputSearch"] )) {
-                $jnput = $_GET["inputSearch"];
-                $words = explode(" ", $jnput);
+                $input = $_GET["inputSearch"];
+                $words = explode(" ", $input);
                 //var_dump($words);
                 
                 $categoriasBusqueda = ["ProductName","Quantity","Category"];
