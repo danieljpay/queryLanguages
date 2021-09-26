@@ -10,6 +10,8 @@
 </head>
 <body>
     <?php
+        include("../lib/databaseFunctions.php");
+
         echo "<h1 class='pageTitle'>Query languages</h1>";
         include("../src/components/Searcher.html");
 
@@ -22,7 +24,7 @@
                 $words = explode(" ", $input);
                 //var_dump($words);
                 
-                $categoriasBusqueda = ["ProductName","Quantity","Category"];
+                $categoriasBusqueda = ["ProductName","QuantityPerUnit","CategoryID"];
                 $query = "";
                 //Detección de operadores
                 for ($i=0; $i < count($categoriasBusqueda); $i++) {
@@ -42,14 +44,16 @@
                                 $query .= "NOT ";
                                 break;
                             default:
-                                //echo "no encontré ningún operador";
+                                //echo "encontré una palabra";
                                 $query .= $categoriasBusqueda[$i] . " LIKE '%" . $words[$j] . "%'";
                                 break;
                         }
                     }
                     echo $query . "<br/><br/>";
+                    var_dump(executeQuery($query));
+                    echo "<br/>";
                 }
-                
+
             } else {
                 echo "<p>Tus resultados se mostrarán aquí</p>";
             }
