@@ -50,7 +50,16 @@
                         }
                     }
                     echo $query . "<br/><br/>";
-                    var_dump(executeQuery($query));
+                    $results = executeQuery($query);
+
+                    foreach($results as $coincidence) {
+                        echo "<div class='results-card'>";
+                        echo "<p>" . "ProductName: " . $coincidence["ProductName"] . " </p>";
+                        echo "<p>" . "QuantityPerUnit: " . $coincidence["QuantityPerUnit"] . " </p>"; 
+                        echo "<p>" . "CategoryID: " . $coincidence["CategoryID"] . " </p>";
+                        echo "</div>";
+                    }
+                    
                     echo "<br/>";
                 }
 
