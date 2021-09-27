@@ -42,10 +42,24 @@
                             case "NOT":
                                 //echo "encontré un NOT";
                                 $query .= "NOT ";
-                                break;
+                                break; 
                             default:
-                                //echo "encontré una palabra";
-                                $query .= $categoriasBusqueda[$i] . " LIKE '%" . $words[$j] . "%'";
+                                switch ( strstr($words[$j], '(', true) ) {
+                                    case 'CADENA':
+                                        //echo "encontré una cadena()";
+                                        $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
+                                        $query .= $categoriasBusqueda[$i] . " = '" . $wordToSearch ."'";
+                                        break;
+                                    case 'PATRON':
+                                        //echo "encontré un patrón()";
+                                        $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
+                                        $query .= $categoriasBusqueda[$i] . " LIKE '%" . $wordToSearch . "%'";
+                                        break;
+                                    default:
+                                        //echo "encontré una palabra";
+                                        $query .= $categoriasBusqueda[$i] . " LIKE '%" . $words[$j] . "%'";
+                                        break;
+                                }
                                 break;
                         }
                     }
@@ -59,7 +73,7 @@
                         echo "<p>" . "CategoryID: " . $coincidence["CategoryID"] . " </p>";
                         echo "</div>";
                     }
-                    
+
                     echo "<br/>";
                 }
 
