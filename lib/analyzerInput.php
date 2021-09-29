@@ -1,59 +1,92 @@
 <?php
-    include("../lib/databaseFunctions.php");
+    include("databaseFunctions.php");
+    include("printResults.php");
 
     function analyzerInput($words) {
         $categoriasBusqueda = ["ProductName", "QuantityPerUnit", "CategoryID"];
         $query = "";
+        $tableToSearch = "";
+        $campoToSearch = "";
+        $camposInput = lookCamposInput($words);
+        $hasCamposInput = $camposInput ? true : false;
+        if($camposInput) {
+            $camposArray = explode(",", $camposInput);
+            foreach($camposArray as $campo) {
+                $temp = explode(".", $campo);
+                // var_dump($temp);+
+                $tableToSearch = $temp[0];
+                $campoToSearch = $temp[1];
+            }
+        } else {
+            $tableToSearch = "products";
+            $camposInput = "products.ProductName, products.QuantityPerUnit, products.CategoryID";
+        }
 
         //Detección de operadores
         for ($i=0; $i < count($categoriasBusqueda); $i++) {
-            $query = "SELECT products.ProductName, products.QuantityPerUnit, products.CategoryID FROM products WHERE ";
+            $query = "SELECT " . $camposInput . " FROM " . $tableToSearch . " WHERE ";
             for ($j=0; $j < count($words); $j++) { 
                 switch ($words[$j]) {
                     case "AND":
-                        //echo "encontré un AND";
                         $query .= " AND ";
                         break;
                     case "OR":
-                        //echo "encontré un OR";
                         $query .= " OR ";
                         break;
                     case "NOT":
-                        //echo "encontré un NOT";
                         $query .= "NOT ";
                         break; 
                     default:
                         switch ( strstr($words[$j], '(', true) ) {
                             case 'CADENA':
                                 //echo "encontré una cadena()";
-                                $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
-                                $query .= $categoriasBusqueda[$i] . " = '" . $wordToSearch ."'";
+                                if($hasCamposInput) {
+                                    $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
+                                    $query .= $campoToSearch . " LIKE '%" . $wordToSearch . "%'";
+                                } else {
+                                    $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
+                                    $query .= $categoriasBusqueda[$i] . " = '" . $wordToSearch ."'";
+                                }
                                 break;
                             case 'PATRON':
                                 //echo "encontré un patrón()";
-                                $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
-                                $query .= $categoriasBusqueda[$i] . " LIKE '%" . $wordToSearch . "%'";
+                                if ($hasCamposInput) {
+                                    $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
+                                    $query .= $campoToSearch . " LIKE '%" . $wordToSearch . "%'";
+                                } else {
+                                    $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
+                                    $query .= $categoriasBusqueda[$i] . " LIKE '%" . $wordToSearch . "%'";
+                                }
+                                break;
+                            case 'CAMPOS':
                                 break;
                             default:
                                 //echo "encontré una palabra";
-                                $query .= $categoriasBusqueda[$i] . " LIKE '%" . $words[$j] . "%'";
+                                if($hasCamposInput) {
+                                    $query .= $campoToSearch . " LIKE '%" . $words[$j] . "%'";
+                                } else {
+                                    $query .= $categoriasBusqueda[$i] . " LIKE '%" . $words[$j] . "%'";
+                                }
                                 break;
                         }
                         break;
                 }
+                $i = $hasCamposInput ? count($words)-1 : $i; //para salir del array de categorías si el usuario puso CAMPOS() o mantenerse 
             }
+
             echo $query . "<br/><br/>";
             $results = executeQuery($query);
-
-            foreach($results as $coincidence) {
-                echo "<div class='results-card'>";
-                echo "<p>" . "ProductName: " . $coincidence["ProductName"] . " </p>";
-                echo "<p>" . "QuantityPerUnit: " . $coincidence["QuantityPerUnit"] . " </p>"; 
-                echo "<p>" . "CategoryID: " . $coincidence["CategoryID"] . " </p>";
-                echo "</div>";
-            }
-
-            echo "<br/>";
+            printResults($results);
         }
+    }
+
+    function lookCamposInput($words) {
+        for ($i=0; $i < count($words); $i++) { 
+            if(strstr($words[$i], '(', true) == "CAMPOS") {
+                // var_dump(substr(strstr($words[$i], '('), 1, -1));
+                return substr(strstr($words[$i], '('), 1, -1);
+            }
+        }
+        return "";
     }
 ?>
