@@ -41,11 +41,31 @@
                             case 'CADENA':
                                 //echo "encontré una cadena()";
                                 if($hasCamposInput) {
-                                    $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
-                                    $query .= $campoToSearch . " LIKE '%" . $wordToSearch . "%'";
+                                    if(strpos($words[$j], ")")) {
+                                        $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
+                                        $query .= $campoToSearch . " = '" . $wordToSearch . "'";
+                                    } else {
+                                        $wordToSearch = substr(strstr($words[$j], '('), 1); //elimina caracter "("
+                                        while(!strpos($words[$j], ")")) {
+                                            $j++;
+                                            $wordToSearch .= " " . $words[$j];
+                                        }
+                                        $wordToSearch = substr($wordToSearch, 0 , -1); //elimina caracter ")"
+                                        $query .= $campoToSearch . " = '" . $wordToSearch . "'";
+                                    }
                                 } else {
-                                    $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
-                                    $query .= $categoriasBusqueda[$i] . " = '" . $wordToSearch ."'";
+                                    if(strpos($words[$j], ")")) {
+                                        $wordToSearch = substr(strstr($words[$j], '('), 1, -1);
+                                        $query .= $categoriasBusqueda[$i] . " = '" . $wordToSearch ."'";
+                                    } else {
+                                        $wordToSearch = substr(strstr($words[$j], '('), 1); //elimina caracter "("
+                                        while(!strpos($words[$j], ")")) {
+                                            $j++;
+                                            $wordToSearch .= " " . $words[$j];
+                                        }
+                                        $wordToSearch = substr($wordToSearch, 0 , -1); //elimina caracter ")"
+                                        $query .= $categoriasBusqueda[$i] . " = '" . $wordToSearch . "'";
+                                    }
                                 }
                                 break;
                             case 'PATRON':
@@ -71,7 +91,7 @@
                         }
                         break;
                 }
-                $i = $hasCamposInput ? count($words)-1 : $i; //para salir del array de categorías si el usuario puso CAMPOS() o mantenerse 
+                $i = $hasCamposInput ? count($words) : $i; //para salir del array de categorías si el usuario puso CAMPOS() o mantenerse 
             }
 
             echo $query . "<br/><br/>";
