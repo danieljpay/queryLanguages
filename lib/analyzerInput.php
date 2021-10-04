@@ -5,7 +5,7 @@
     include("structureQueryWithoutCampos.php");
 
     function analyzerInput($words) {
-        //Detección de campos
+
         $camposInput = lookCamposInput($words);
         $hasCamposInput = $camposInput ? true : false;
         
@@ -20,12 +20,12 @@
     function lookCamposInput($words) {
         for ($i=0; $i < count($words); $i++) { 
             if(strstr($words[$i], '(', true) == "CAMPOS") {
-                $camposValue = substr(strstr($words[$i], '('), 1); //elimina caracter "("
+                $camposValue = substr(strstr($words[$i], '('), 1);
                 while(!strpos($words[$i], ")")) {
                     $i++;
                     $camposValue .= " " . $words[$i];
                 }
-                $camposValue = substr($camposValue, 0 , -1); //elimina caracter ")"
+                $camposValue = substr($camposValue, 0 , -1);
                 return $camposValue;
             }
         }
@@ -39,7 +39,7 @@
                     $i++;
                     unset($words[$i-1]);
                 }
-                if(strpos($words[$i], ')')) { //para eliminar el último elemento
+                if(strpos($words[$i], ')')) {
                     unset($words[$i]);   
                 }
             }

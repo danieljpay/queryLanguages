@@ -22,7 +22,6 @@
             if(isset( $_GET["inputSearch"] )) {
                 $input = $_GET["inputSearch"];
                 $words = explode(" ", $input);
-                // var_dump($words);
                 
                 analyzerInput($words);
 
