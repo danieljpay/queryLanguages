@@ -10,7 +10,6 @@
 </head>
 <body>
     <?php
-        include("../lib/analyzerInput.php");
 
         echo "<h1 class='pageTitle'>Query languages</h1>";
         include("../src/components/Searcher.html");
@@ -18,18 +17,7 @@
         echo "<hr/>";
 
         echo "<div class='results'>";
-
-            if(isset( $_GET["inputSearch"] )) {
-                $input = $_GET["inputSearch"];
-                $words = explode(" ", $input);
-                // var_dump($words);
-                
-                analyzerInput($words);
-
-            } else {
-                echo "<p>Tus resultados se mostrarán aquí</p>";
-            }
-
+            include("../lib/doSearch.php");
         echo "</div>";
     ?>
 </body>
