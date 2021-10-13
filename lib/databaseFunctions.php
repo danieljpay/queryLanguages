@@ -12,9 +12,14 @@
     }
 
     function executeQuery($query) {
+        // echo $query . "<br/><br/>";
         $connection = connectDB();
         $queryResults = mysqli_query($connection, $query);
-        for ($arrayResults = array(); $line = mysqli_fetch_assoc($queryResults); $arrayResults[] = $line);
+        if($queryResults) {
+            for ($arrayResults = array(); $line = mysqli_fetch_assoc($queryResults); $arrayResults[] = $line);
+        } else {
+            $queryResults="";
+        }
         closeConnectionBD($connection);
         return $arrayResults;
     }

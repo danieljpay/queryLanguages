@@ -51,7 +51,6 @@
                         break;
                 }
             }
-            echo $query . "<br/><br/>";
             $results = executeQuery($query);
             printResults($results);
         }

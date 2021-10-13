@@ -10,7 +10,6 @@
 </head>
 <body>
     <?php
-
         echo "<h1 class='pageTitle'>Query languages</h1>";
         include("../src/components/Searcher.html");
 
